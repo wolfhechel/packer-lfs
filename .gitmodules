@@ -1,0 +1,3 @@
+[submodule "packer-lfs-build-host"]
+	path = packer-lfs-build-host
+	url = https://github.com/wolfhechel/packer-lfs-build-host.git

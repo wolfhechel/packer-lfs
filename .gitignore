@@ -1,0 +1,5 @@
+.DS_Store
+source_cache/*
+BOOK/*
+commands/*
+output/*
