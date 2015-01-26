@@ -2,29 +2,26 @@
 	"variables": {
 		"build_host": "packer-lfs-build-host/output-build-host/packer-build-host.ovf",
 
-		// Number of cores for the building machine
 		"cores": 2,
-
-		// ... and the amount of RAM for it
 		"ram": 1024,
 
-        "disk_size": 20480,
-        "boot_partition_size": 128,
+       		"disk_size": 20480,
+        		"boot_partition_size": 128,
 
-        "source_cache_dir": "source_cache",
+        		"source_cache_dir": "source_cache",
 
-        "build_user": "lfs",
-        "build_user_group": "users",
-        "build_dir": "/mnt/build_dir",
-        "build_disk": "/dev/sdb",
+       		 "build_user": "lfs",
+        		"build_user_group": "users",
+        		"build_dir": "/mnt/build_dir",
+        		"build_disk": "/dev/sdb",
 
-        "output_directory": "output",
-        "version": "{{timestamp}}",
+        		"output_directory": "output",
+        		"version": "{{timestamp}}",
 
 		"_headless": true,
 
 		"debug": true,
-		"skip_download": "y"
+		"skip_download": "n"
   	},
 
 	"builders": [
@@ -34,6 +31,7 @@
 			"output_directory": "{{user `output_directory`}}",
 			"source_path": "{{user `build_host`}}",
 			"ssh_username": "root",
+			"guest_additions_mode": "disable",
 			"boot_wait": "5s",
 			"shutdown_command": "poweroff",
 			"vm_name": "lfs-{{user `version`}}",
@@ -42,9 +40,9 @@
 				[
 					"modifyvm",
 					"{{.Name}}",
-          			"--cpus", "{{user `cores`}}",
-          			"--memory", "{{user `ram`}}"
-        		],
+          					"--cpus", "{{user `cores`}}",
+          					"--memory", "{{user `ram`}}"
+        				],
 				[
 					"createhd",
 					"--filename", "{{user `output_directory`}}/{{.Name}}-build.vdi",
@@ -74,8 +72,6 @@
 
 	"provisioners": [
 		{
-			// Verifies that the build host is suitable for building,
-			// and then starts configuring the host.
 			"type": "shell",
 			"scripts": [
 				"provisioning/host-prerequisits.sh",
@@ -91,46 +87,37 @@
 			]
 		},
 		{
-			// Copy over all command files
 			"type": "file",
 			"source": "commands",
 			"destination": "{{user `build_dir`}}"
 		},
 		{
-			// Download all required packages
 			"type": "shell",
 			"script": "scripts/download-list.sh",
-			"execute_command": "chmod +x {{.Path}}; cd {{user `build_dir`}}/sources; {{.Path}} {{user `build_dir`}}/commands/*-list",
+			"execute_command": "chmod +x {{.Path}}; cd {{user `build_dir`}}/sources; {{.Vars}} {{.Path}} {{user `build_dir`}}/commands/*-list",
 			"environment_vars": [
 				"SKIP={{user `skip_download`}}"
 			]
 		},
 		{
-			// Build chapter 5 from the book
 			"type": "shell",
 			"environment_vars": [
 				"HOME=$HOME",
 				"TERM=$TERM",
-				"LFS='{{user `build_dir`}}'",
-				"LC_ALL=POSIX",
-				"LFS_TGT=$(uname -m)-lfs-linux-gnu",
 				"PATH=/tools/bin:/bin:/usr/bin",
-				"PACKER_DEBUG={{user `debug`}}",
-				"MAKEFLAGS='-j {{user `cores`}}'",
+				"LFS='{{user `build_dir`}}'",
 				"LFS_VERSION={{user `version`}}"
 			],
-			"execute_command": "chmod +x {{.Path}}; sudo -u {{user `build_user`}} env -i {{.Vars}} /bin/bash {{.Path}}",
-			"script": "provisioning/build_temporary_system.sh"
+			"execute_command": "chmod a+rwx {{.Path}}; echo {{.Vars}} {{.Path}}; sudo -u {{user `build_user`}} env -i {{.Vars}} /bin/bash {{.Path}}",
+			"script": "provisioning/build-temporary-system.sh"
 		},
 		{
-			// Change owner of $LFS/tools
 			"type": "shell",
 			"inline": [
 				"chown -R root:root {{user `build_dir`}}/tools"
 			]
 		},
 		{
-			// Create kernel filesystem, then remove that step from chapter 6 to avoid running it in the next step again
 			"type": "shell",
 			"environment_vars": [
 				"LFS='{{user `build_dir`}}'"
@@ -141,17 +128,24 @@
 			]
 		},
 		{
-			// Build chapter 6 from the book
+			"type": "file",
+			"source": "kernel-config",
+			"destination": "{{user `build_dir`}}"
+		},
+		{
 			"type": "shell",
 			"environment_vars": [
 				"HOME=$HOME",
 				"TERM=$HOME",
-				"PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin",
-				"LFS=''"
+				"PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin"
 			],
-			"remote_path": "/tools/bin/builder-script.sh",
-			"execute_command": "chroot '{{user `build_dir`}}' /tools/bin/env -i {{.Vars}} /tools/bin/bash {{.Path}} /commands/chapter06",
-			"script": "scripts/builder.sh"
+			"remote_path": "/tools/bin/build-system.sh",
+			"execute_command": "chroot '{{user `build_dir`}}' /tools/bin/env -i {{.Vars}} /tools/bin/bash {{.Path}}",
+			"script": "provisioning/build-system.sh"
+		},
+		{
+			"type": "shell",
+			"script": "provisioning/generate-fstab.sh"
 		}
 	]
 }

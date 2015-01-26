@@ -6,6 +6,10 @@ set +h          # Disable hashall
 
 umask 022       # Make sure that newly created files has more restrictive
 
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+MAKEFLAGS='-j $(nprocs)'
+
 shopt -s -o pipefail
 
 _src_cache="$LFS/sources"
@@ -44,5 +48,6 @@ else
   )
 
   echo "Backing upp the temporary system"
+  mkdir -p `dirname $toolchain_tar_path`
   tar cJf "$toolchain_tar_path" tools
 fi

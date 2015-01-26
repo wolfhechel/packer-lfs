@@ -56,6 +56,12 @@
                   ../@id='chapter-bootscripts' or
                   ../@id='chapter-bootable') and
                   @id!='ch-tools-changingowner' and
+                  @id!='ch-tools-stripping' and
+                  @id!='ch-system-grub' and
+                  @id!='ch-system-vim' and
+                  @id!='ch-scripts-locale' and
+                  @id!='ch-bootable-fstab' and
+                  @id!='ch-bootable-grub' and
                   count(descendant::screen/userinput) &gt; 0 and
                   count(descendant::screen/userinput) &gt;
                       count(descendant::screen[@role='nodump']) and
@@ -197,7 +203,7 @@ fi
       <xsl:when test="string() = 'make mrproper'">
         <xsl:text>make mrproper&#xA;</xsl:text>
         <xsl:if test="ancestor::sect1[@id='ch-bootable-kernel']">
-          <xsl:text>cp -v ../kernel-config .config&#xA;</xsl:text>
+          <xsl:text>mv /kernel-config .config</xsl:text>
         </xsl:if>
       </xsl:when>
 
@@ -267,6 +273,26 @@ fi
           <xsl:otherwise>
             <xsl:apply-templates/>
             <xsl:text>&#xA;</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+
+      <xsl:when test="ancestor::sect1[@id='ch-scripts-network']">
+        <xsl:choose>
+          <xsl:when test="contains(string(), 'hostname')" />
+          <xsl:when test="contains(string(), '/etc/hosts')">
+            <xsl:text>cat &gt; /etc/hosts &lt;&lt; "EOF"
+# Begin /etc/hosts (network card version)
+
+127.0.0.1 localhost
+::1       localhost
+
+# End /etc/hosts (network card version)
+EOF
+            </xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>

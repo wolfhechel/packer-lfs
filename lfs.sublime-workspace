@@ -472,6 +472,13 @@
 	},
 	"file_history":
 	[
+		"/Users/jonet/packer-lfs/build.json",
+		"/Users/jonet/packer-lfs/Makefile",
+		"/Users/jonet/packer-lfs/provisioning/build_temporary_system.sh",
+		"/Users/jonet/packer-lfs/lfs.xsl",
+		"/Users/jonet/packer-lfs/scripts/genfstab",
+		"/Users/jonet/packer-lfs/scripts/genfstab.sh",
+		"/Users/jonet/packer-lfs/commands/chapter05/064-stripping.sh",
 		"/Users/jonet/lfs/provisioning/host-configuration.sh",
 		"/Users/jonet/lfs/scripts/builder.sh",
 		"/Users/jonet/lfs/build.json",
@@ -592,14 +599,7 @@
 		"/Users/jonet/Code/Server/testing/playbooks/roles/php5-fpm/templates/pool.conf.j2",
 		"/Users/jonet/Code/Server/testing/playbooks/roles/php5-fpm/meta/main.yml",
 		"/Users/jonet/Code/Server/testing/playbooks/roles/nginx/handles/main.yml",
-		"/Users/jonet/Code/Server/grains/fs/usr/local/lib/php/composer/vendor/drush/drush/tests/phpunit.xml.dist",
-		"/Users/jonet/Code/Server/testing/playbooks/roles/nginx/files/fastcgi_params",
-		"/Users/jonet/Downloads/dotdeb.gpg",
-		"/Users/jonet/Code/Server/testing/site_a.conf",
-		"/Users/jonet/Code/Server/testing/playbooks/roles/nginx/files/50x/50x.html",
-		"/Users/jonet/Code/Server/testing/playbooks/roles/nginx/files/sites-config/other.conf",
-		"/Users/jonet/Library/Application Support/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
-		"/Users/jonet/Code/Server/testing/playbooks/roles/nginx/meta/main.yml"
+		"/Users/jonet/Code/Server/grains/fs/usr/local/lib/php/composer/vendor/drush/drush/tests/phpunit.xml.dist"
 	],
 	"find":
 	{
@@ -620,6 +620,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"dm_name_for_devnode",
+			"mountpoint",
+			"bytype",
+			"optstring_apply_quirks",
+			"getopts",
+			"optstring_get_option",
+			"bytag",
+			"nopseudofs",
 			"script_directory",
 			"VERSION=",
 			"concat",
@@ -744,7 +752,7 @@
 	},
 	"incremental_find":
 	{
-		"height": 25.0
+		"height": 38.0
 	},
 	"input":
 	{

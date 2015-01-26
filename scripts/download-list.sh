@@ -15,7 +15,9 @@ validate_md5() {
 	return $matches
 }
 
-if [ ${SKIP:-n} == y ]; then
+echo $SKIP
+
+if [ ${SKIP:-n} == n ]; then
 	for list in $@; do
 		while read line; do
 			components=($line)
