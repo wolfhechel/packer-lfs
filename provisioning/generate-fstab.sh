@@ -2,6 +2,10 @@
 
 shopt -s extglob
 
+root=$LFS
+
+exec 1>"$root/etc/fstab"
+
 # generated from util-linux source: libmount/src/utils.c
 declare -A pseudofs_types=([anon_inodefs]=1
                            [autofs]=1
@@ -288,9 +292,6 @@ optstring_apply_quirks() {
       ;;
   esac
 }
-
-
-root=$LFS; shift
 
 if ! mountpoint -q "$root"; then
   die "$root is not a mountpoint"

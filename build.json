@@ -145,7 +145,10 @@
 		},
 		{
 			"type": "shell",
-			"script": "provisioning/generate-fstab.sh"
+			"script": "provisioning/generate-fstab.sh",
+			"environment_vars": [
+				"LFS='{{user `build_dir`}}'"
+			]
 		}
 	]
 }
