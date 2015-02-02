@@ -53,7 +53,6 @@ SOURCE_CACHE_SHARE_NAME=source_cache
 echo "==> loading source cache '${SOURCE_CACHE_SHARE_NAME}'"
 
 if modprobe vboxsf; then
-	# uid=${BUILD_USER},gid=${BUILD_USER_GROUP},rw,dmode=700,fmode=600,comment=systemd.automount 0 0
 	/usr/bin/mount -t vboxsf -o uid=${BUILD_USER},gid=${BUILD_USER_GROUP},rw,dmode=0700,fmode=600 ${SOURCE_CACHE_SHARE_NAME} ${BUILD_DIR}/sources
 else
 	echo "Source cache disabled, failed to load vboxsf module"

@@ -2,7 +2,7 @@ set -o errexit  # Exit if error
 set -o nounset  # Exit if variable not initalized
 set +h          # Disable hashall
 
-#set -o xtrace
+set -o xtrace
 
 umask 022       # Make sure that newly created files has more restrictive
 
@@ -19,10 +19,8 @@ _src_cache="$LFS/sources"
 stderr_color=`echo -e '\033[31m'`
 reset_color=`echo -e '\033[0m'`
 
-cd $LFS
-
 (
-  cd build
+  cd $LFS/build
 
   for script_directory in $LFS/commands/chapter0{6..8}; do
     for script in $(ls "$script_directory"); do

@@ -58,7 +58,6 @@
                   @id!='ch-tools-changingowner' and
                   @id!='ch-tools-stripping' and
                   @id!='ch-system-grub' and
-                  @id!='ch-system-vim' and
                   @id!='ch-scripts-locale' and
                   @id!='ch-bootable-fstab' and
                   @id!='ch-bootable-grub' and
@@ -102,18 +101,19 @@
     <!-- Creating dirs and files -->
     <exsl:document href="{$dirname}/{$order}-{$filename}.sh" method="text">
 
-      <xsl:variable name="tar">
+      <xsl:variable name="tar_url">
         <xsl:choose>
           <xsl:when test="sect1info/address">
-            <xsl:value-of select="str:tokenize(sect1info/address, '/')[last()]" />
+            <xsl:value-of select="sect1info/address" />
           </xsl:when>
           <xsl:otherwise>
-            <xsl:text />
+            <xsl:value-of select="///sect1[@id='materials-packages']//varlistentry/listitem[../term[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), $filename)]]/para[2]/ulink/@url" />
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>
 
-      <xsl:if test="$tar != ''">
+      <xsl:if test="$tar_url != ''">
+        <xsl:variable name="tar" select="str:tokenize($tar_url, '/')[last()]" />
         <xsl:variable name="src_tar" select="concat($src_dir, '/', $tar)" />
         <xsl:value-of select="concat('tar xf ', $src_tar, '&#xA;')" />
         <xsl:value-of select="concat('cd $(tar tf ', $src_tar, ' | head -n1 | sed &quot;s@/.*@@&quot; || true) &amp;>/dev/null', '&#xA;&#xA;')" />

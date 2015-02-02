@@ -13,7 +13,8 @@ PACKER := packer
 PACKERFLAGS ?=
 SVN := svn
 SVNFLAGS ?=
-VBOX := VBoxManage
+
+include VirtualBoxControl.Makefile
 
 all: $(OUTPUT_DIR)/$(VM_NAME).ovf
 	@echo Finished building Linux From Scratch SVN-$(VERSION) in $</$(VM_NAME).ovf
@@ -40,13 +41,5 @@ clean: removevm
 distclean: clean
 	rm -rf $(SOURCES_DIR) $(BOOK_DIR) $(COMMANDS_DIR)
 
-removevm:
-	$(VBOX) controlvm $(VM_NAME) poweroff || true
-	$(VBOX) unregistervm $(VM_NAME) -delete || true
 
-importvm:
-	$(VBOX) import $(OUTPUT_DIR)/$(VM_NAME).ovf
-	$(VBOX) modifyvm $(VM_NAME) --natpf1 "guestssh,tcp,,2222,,22"
-	$(VBOX) startvm $(VM_NAME)
-
-.PHONY: update clean distclean removevm importvm
+.PHONY: update clean distclean

@@ -130,25 +130,18 @@
 		{
 			"type": "file",
 			"source": "kernel-config",
-			"destination": "{{user `build_dir`}}"
+			"destination": "{{user `build_dir`}}/kernel-config"
 		},
 		{
 			"type": "shell",
 			"environment_vars": [
 				"HOME=$HOME",
-				"TERM=$HOME",
+				"TERM=$TERM",
 				"PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin"
 			],
 			"remote_path": "/tools/bin/build-system.sh",
 			"execute_command": "chroot '{{user `build_dir`}}' /tools/bin/env -i {{.Vars}} /tools/bin/bash {{.Path}}",
 			"script": "provisioning/build-system.sh"
-		},
-		{
-			"type": "shell",
-			"script": "provisioning/generate-fstab.sh",
-			"environment_vars": [
-				"LFS='{{user `build_dir`}}'"
-			]
 		}
 	]
 }
