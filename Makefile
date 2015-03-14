@@ -1,5 +1,9 @@
 LFS_BOOK := svn://svn.linuxfromscratch.org/LFS/branches/systemd/
-XSL := lfs.xsl
+XSL := lfs-2.xsl
+
+JHALFS := svn://svn.linuxfromscratch.org/ALFS/jhalfs/trunk
+JHALFS_DIR := jhalfs
+JHALFS_XSL := $(JHALFS_DIR)/LFS/lfs.xsl
 
 SOURCES_DIR := source_cache
 BOOK_DIR := BOOK
@@ -14,8 +18,6 @@ PACKERFLAGS ?=
 SVN := svn
 SVNFLAGS ?=
 
-include VirtualBoxControl.Makefile
-
 all: $(OUTPUT_DIR)/$(VM_NAME).ovf
 	@echo Finished building Linux From Scratch SVN-$(VERSION) in $</$(VM_NAME).ovf
 
@@ -25,14 +27,18 @@ $(OUTPUT_DIR)/$(VM_NAME).ovf: $(COMMANDS_DIR)/ $(SOURCES_DIR)
 $(SOURCES_DIR):
 	mkdir $@
 
-$(COMMANDS_DIR)/: $(XSL) $(BOOK_DIR)/index.xml
-	xsltproc --nonet --xinclude -o $@/ $(XSL) $?
+$(COMMANDS_DIR)/: $(JHALFS_XSL) $(XSL) $(BOOK_DIR)/index.xml
+	xsltproc --nonet --xinclude --stringparam pkgmngt y -o $@/ $(XSL) $?
+
+$(JHALFS_XSL):
+	$(SVN) co $(SVNFLAGS) $(JHALFS) $(JHALFS_DIR)
 
 $(BOOK_DIR)/index.xml:
 	$(SVN) co $(SVNFLAGS) $(LFS_BOOK) $(dir $@)
 
 update:
 	cd $(BOOK_DIR); $(SVN) update
+	cd $(JHALFS_DIR); $(SVN) update
 	rm -rf $(COMMANDS_DIR)
 
 clean: removevm
@@ -41,5 +47,6 @@ clean: removevm
 distclean: clean
 	rm -rf $(SOURCES_DIR) $(BOOK_DIR) $(COMMANDS_DIR)
 
+include VirtualBoxControl.Makefile
 
 .PHONY: update clean distclean
